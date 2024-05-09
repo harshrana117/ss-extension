@@ -13,6 +13,28 @@ chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
   });
 });
 
+let captureInProgress = false;
+
+async function captureScreenshot() {
+  if (captureInProgress) return;
+
+  captureInProgress = true;
+
+  chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
+    chrome.tabs.sendMessage(tabs[0]?.id, { action: "start-capture" });
+
+    chrome.scripting.executeScript(
+      {
+        target: { tabId: tabs[0].id },
+        files: ["./get-info-and-scroll-top.js"],
+      },
+      function (results) {
+        console.log("results", results);
+      }
+    );
+  });
+}
+
 let counter = 0;
 
 function log() {
@@ -51,7 +73,6 @@ function captureFullPage() {
     //     console.log(dataUrl);
     //   }
     // );/
-    setTimeout(() => console.log("Harsh"), 500);
     chrome.tabs.captureVisibleTab(
       tab.windowId,
       { format: "png" },
@@ -92,7 +113,7 @@ function captureFullPage() {
   });
 }
 
-async function saveScreenshot(dataUrl) {
+async function msaveScreenshot(dataUrl) {
   try {
     const handle = await window.showSaveFilePicker();
     const writableStream = await handle.createWritable();
