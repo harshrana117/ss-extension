@@ -1,0 +1,19 @@
+{
+  "name": "FPWSS",
+  "version": "1.0",
+  "description": "Take full page web screenshot",
+  "manifest_version": 3,
+  "action": {
+    "default_popup": "popup.html"
+
+  },
+  "permissions": ["tabs", "scripting", "activeTab", "downloads"],
+  "host_permissions": ["<all_urls>"],
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": ["contentScript.js"]
+    }
+  ]
+
+}
